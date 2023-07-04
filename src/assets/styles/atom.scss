@@ -1,0 +1,251 @@
+// 字体 颜色
+$text-sizes: 10, 12, 13, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40;
+$textColorTypes: (
+    name: 'tip',
+    value: #999
+  ),
+  (
+    name: 'sub',
+    value: #666
+  ),
+  (
+    name: 'main',
+    value: #333
+  ),
+  (
+    name: 'white',
+    value: #fff
+  ),
+  (
+    name: 'warning',
+    value: #f7ba2a
+  ),
+  (
+    name: 'danger',
+    value: #fc0505
+  ),
+  (
+    name: 'success',
+    value: #23aa2c
+  ),
+  (
+    name: 'theme',
+    value: #055ffc
+  ),
+  (
+    name: 'subTheme',
+    value: #0937a6
+  );
+$text-weight: 400, 500, 600, 700, 800;
+@each $size in $text-sizes {
+  .text-#{$size} {
+    font-size: #{$size} + px;
+  }
+  @each $type in $textColorTypes {
+    .text-#{map-get($type, name)} {
+      color: map-get($type, value);
+    }
+    .text-#{$size}-#{map-get($type, name)} {
+      font-size: #{$size} + px;
+      color: map-get($type, value);
+    }
+    @each $weight in $text-weight {
+      .text-#{$weight} {
+        font-weight: #{$weight};
+      }
+      .text-#{$size}-#{$weight} {
+        font-size: #{$size} + px;
+        font-weight: #{$weight};
+      }
+      .text-#{map-get($type, name)}-#{$weight} {
+        color: map-get($type, value);
+        font-weight: #{$weight};
+      }
+      .text-#{$size}-#{map-get($type, name)}-#{$weight} {
+        font-size: #{$size} + px;
+        color: map-get($type, value);
+        font-weight: #{$weight};
+      }
+    }
+  }
+}
+
+// 间距生成 跟UI统一按照4的倍数设计
+$layoutValueXList: 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 48, 52, 56, 64;
+$layoutValueYList: 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 48, 50, 52, 56, 60;
+$layoutTypeXList: l, r, x;
+$layoutTypeYList: t, b, y;
+$x: left, right;
+$y: top, bottom;
+$layoutTypeXMap: (
+  l: left,
+  r: right,
+  x: $x
+);
+$layoutTypeYMap: (
+  t: top,
+  b: bottom,
+  y: $y
+);
+
+@each $layoutValue in $layoutValueXList {
+  .m-#{$layoutValue} {
+    margin: #{$layoutValue}px;
+  }
+  .p-#{$layoutValue} {
+    padding: #{$layoutValue}px;
+  }
+  @each $layoutType in $layoutTypeXList {
+    .m#{$layoutType}-#{$layoutValue} {
+      @each $value in map-get($layoutTypeXMap, $layoutType) {
+        margin-#{$value}: #{$layoutValue}px;
+      }
+    }
+    .p#{$layoutType}-#{$layoutValue} {
+      @each $value in map-get($layoutTypeXMap, $layoutType) {
+        padding-#{$value}: #{$layoutValue}px;
+      }
+    }
+  }
+}
+@each $layoutValue in $layoutValueYList {
+  .m-#{$layoutValue} {
+    margin: #{$layoutValue}px;
+  }
+  .p-#{$layoutValue} {
+    padding: #{$layoutValue}px;
+  }
+  @each $layoutType in $layoutTypeYList {
+    .m#{$layoutType}-#{$layoutValue} {
+      @each $value in map-get($layoutTypeYMap, $layoutType) {
+        margin-#{$value}: #{$layoutValue}px;
+      }
+    }
+    .p#{$layoutType}-#{$layoutValue} {
+      @each $value in map-get($layoutTypeYMap, $layoutType) {
+        padding-#{$value}: #{$layoutValue}px;
+      }
+    }
+  }
+}
+
+// flex生成
+$justifyContentList: start, end, between, around, center;
+$justifyContentMap: (
+  start: flex-start,
+  end: flex-end,
+  between: space-between,
+  around: space-around,
+  center: center
+);
+$alignItemsList: start, end, center, stretch;
+$alignItemsMap: (
+  start: flex-start,
+  end: flex-end,
+  stretch: stretch,
+  center: center
+);
+$flexDirectionList: row, column;
+$flexWrapList: nowrap, wrap;
+$flexColumnName: null;
+$flexName: null;
+$flexWrapName: null;
+$flexJustifyName: null;
+@each $flexDirection in $flexDirectionList {
+  $flexName: flex;
+  @if $flexDirection == column {
+    $flexColumnName: $flexName + -column;
+    .#{$flexColumnName} {
+      display: flex;
+      flex-direction: column;
+    }
+  } @else {
+    $flexColumnName: $flexName;
+    .#{$flexColumnName} {
+      display: flex;
+    }
+  }
+  @each $flexWrap in $flexWrapList {
+    @if $flexWrap == wrap {
+      .#{$flexColumnName + -wrap} {
+        @extend .#{$flexColumnName};
+        flex-wrap: wrap;
+      }
+      $flexWrapName: $flexColumnName + -wrap;
+    } @else {
+      $flexWrapName: $flexColumnName;
+    }
+    @each $justifyContent in $justifyContentList {
+      .#{$flexWrapName + '-' + $justifyContent} {
+        @extend .#{$flexWrapName};
+        justify-content: map-get($justifyContentMap, $justifyContent);
+      }
+      $flexJustifyName: $flexWrapName + '-' + $justifyContent;
+      @each $alignItems in $alignItemsList {
+        .#{$flexJustifyName + '-' + $alignItems} {
+          @extend .#{$flexJustifyName};
+          align-items: map-get($alignItemsMap, $alignItems);
+        }
+      }
+    }
+  }
+}
+
+// grid
+$gridColumnList: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12;
+@each $col in $gridColumnList {
+  .grid-cols-#{$col} {
+    display: grid;
+    grid-template-columns: repeat(#{$col}, minmax(0, #{$col}fr));
+  }
+  .grid-rows-#{$col} {
+    display: grid;
+    grid-template-rows: repeat(#{$col}, minmax(0, #{$col}) fr);
+  }
+  .col-span-#{$col} {
+    grid-column: span #{$col} / span #{$col};
+  }
+}
+
+$gapSizeList: 4, 8, 12, 16, 20, 24, 28, 32, 36, 40;
+@each $gapSize in $gapSizeList {
+  .gap-#{$gapSize} {
+    gap: #{$gapSize}px;
+  }
+  .gap-x-#{$gapSize} {
+    column-gap: #{$gapSize}px;
+  }
+  .gap-y-#{$gapSize} {
+    row-gap: #{$gapSize}px;
+  }
+}
+
+$justifyContentList: start, end, center, stretch, around, between, evenly;
+$justifyContentMap: (
+  start: start,
+  end: end,
+  center: center,
+  stretch: stretch,
+  around: space-around,
+  between: space-between,
+  evenly: space-evenly
+);
+@each $justifyContent in $justifyContentList {
+  .justify-#{$justifyContent} {
+    justify-content: map-get($justifyContentMap, $justifyContent);
+  }
+}
+
+$justifyItemList: start, end, center, stretch;
+@each $justifyItem in $justifyItemList {
+  .justify-items-#{$justifyItem} {
+    justify-items: #{$justifyItem};
+  }
+}
+
+$justifySelfList: start, end, center, stretch;
+@each $justifySelf in $justifySelfList {
+  .justify-self-#{$justifySelf} {
+    justify-self: #{$justifySelf};
+  }
+}
